@@ -47,15 +47,19 @@ def create_test_md (mir_path):
     clone_test_args = [ mir_path, './test_md']
     call_clone (clone_test_args)
 
-def add_remote_branches (test_md_path):
-    remote_cmd = ['git', 'remote', 'add', 'test_md', test_md_path]
-    call_cmd (remote_cmd)
+def add_remote_branches (test_md_path, address):
+    remote_test_cmd = ['git', 'remote', 'add', 'test_md', test_md_path]
+    remote_server_cmd = ['git', 'remote', 'add', 'server', address]
+    call_cmd (remote_test_cmd)
+    call_cmd (remote_server_cmd)
+    call_cmd (['git', 'fetch', 'test_md'])
+    call_cmd (['git', 'fetch', 'server'])
 
-def configure_md ():
+def configure_md (address):
     md_path = os.getcwd () + '/md'
     os.chdir (md_path)
     test_md_path = md_path + '/../test_md'
-    add_remote_branches (test_md_path)
+    add_remote_branches (test_md_path, address)
 
 def main ():
     rep_address = init_workspace_dir ()
@@ -65,7 +69,7 @@ def main ():
     create_mirror_rep (rep_path)
     create_md (mir_path)
     create_test_md (mir_path)
-    configure_md ()
+    configure_md (rep_address)
 
 if __name__ == '__main__':
     main ()
